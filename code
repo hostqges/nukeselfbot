@@ -1,0 +1,60 @@
+import asyncio
+
+continuous_nuke_active = False
+
+@bot.command(name='nuke')
+async def continuous_nuke(ctx, *, message: str = "fuck yo server!"):
+    """creates channels with nuke message"""
+    global continuous_nuke_active
+
+   
+    if not ctx.author.guild_permissions.administrator:
+        await ctx.send("need admin!!!")
+        return
+
+    
+    confirm = await ctx.send("type confirm to proceed baby boy")
+    
+    def check(m):
+        return m.author == ctx.author and m.content.lower() == "confirm"
+
+    try:
+        await bot.wait_for('message', timeout=30.0, check=check)
+    except asyncio.TimeoutError:
+        await ctx.send("nuke cancelled.")
+        return
+
+  
+    continuous_nuke_active = True
+    await ctx.send("nuke started lol `.stopnuke` to stop.")
+
+    channel_count = 0
+    while continuous_nuke_active:
+        try:
+            
+            new_channel = await ctx.guild.create_text_channel(name=f"nuked-channel-{channel_count+1}")
+            await new_channel.send(message)  
+            channel_count += 1
+            print(f"created channel: {new_channel.name}")
+        except discord.HTTPException as e:
+            print(f"failed to create channel: {e}")
+            await ctx.send("hit limit")
+            await asyncio.sleep(10)  
+        except Exception as e:
+            print(f"Error: {e}")
+            break
+
+        await asyncio.sleep(0.1 ill )  
+
+    await ctx.send(f"nuke stoppped {channel_count} were created")
+
+@bot.command(name='stopnuke')
+@commands.has_permissions(administrator=True)
+async def stop_nuke(ctx):
+    """stops nuke lol."""
+    global continuous_nuke_active
+    if continuous_nuke_active:
+        continuous_nuke_active = False
+        await ctx.send("stopping nuke were u scared???")
+    else:
+        await ctx.send("start the nuke first u dumb bitch")
