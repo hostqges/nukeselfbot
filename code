@@ -44,7 +44,7 @@ async def continuous_nuke(ctx, *, message: str = "fuck yo server!"):
             print(f"Error: {e}")
             break
 
-        await asyncio.sleep(0.1 ill )  
+        await asyncio.sleep(0.1)  
 
     await ctx.send(f"nuke stoppped {channel_count} were created")
 
